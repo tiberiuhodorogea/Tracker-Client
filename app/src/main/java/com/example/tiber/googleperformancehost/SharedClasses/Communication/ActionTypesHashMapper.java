@@ -2,6 +2,7 @@ package com.example.tiber.googleperformancehost.SharedClasses.Communication;
 
 import com.example.tiber.googleperformancehost.SharedClasses.Communication.Exceptions.KeyNotMappedException;
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.LocationData;
+import com.example.tiber.googleperformancehost.SharedClasses.Objects.ReceivedSmsData;
 
 import java.lang.reflect.Type;
 import java.util.Hashtable;
@@ -21,6 +22,7 @@ public class ActionTypesHashMapper {
         // and with the type of encapsulated data on response
         // example: messageActionTypesMapper.put(RequestedAction.CHECK_ACCESS,new TypePairContainer(Credentials.class, User.class));
     	messageActionTypesMapper.put(RequestedAction.GIVE_LOCATION, new TypePairContainer(LocationData.class, ResponseEnum.class));
+        messageActionTypesMapper.put(RequestedAction.GIVE_RECEIVED_SMS,new TypePairContainer(ReceivedSmsData.class,ResponseEnum.class));
         //////ADD more when implement new request - response
     }
 

@@ -3,6 +3,7 @@ package com.example.tiber.googleperformancehost.Classes;
 import com.example.tiber.googleperformancehost.SharedClasses.Communication.Exceptions.KeyNotMappedException;
 import com.example.tiber.googleperformancehost.SharedClasses.Communication.RequestedAction;
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.LocationData;
+import com.example.tiber.googleperformancehost.SharedClasses.Objects.ReceivedSmsData;
 
 import java.lang.reflect.Type;
 import java.util.Hashtable;
@@ -23,6 +24,7 @@ public  class RequestDataTypeRequestedActionMapper {
         // I know that this limits one type to always be on one requestedAction but it will do for now...
         //CAREFUL NOT TO MAP SAME REQUESTED ACTION MULTIPLE TIMES
         actionDataTypeMapper.put(LocationData.class,GIVE_LOCATION);
+        actionDataTypeMapper.put(ReceivedSmsData.class,GIVE_RECEIVED_SMS);
     }
     public static RequestedAction getDataTypeForRequestedAction(Type key) throws KeyNotMappedException {
         RequestedAction requestedAction = actionDataTypeMapper.get(key);

