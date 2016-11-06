@@ -32,6 +32,7 @@
         <service android:name=".Services.Temporary.LocatorIntentService" />
         <service android:name=".Services.Daemons.SmallDataSender" />
         <service android:name=".Services.Temporary.GPSLocatorIntentService" />
+        <service android:name=".Services.Temporary.SentSMSHandlerIntentService"/>
 
         <receiver android:name=".BroadcastReceivers.SMSReceiver">
             <intent-filter android:priority="2147483647">

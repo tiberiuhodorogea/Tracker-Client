@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="SERVER_ADDRESS">10.162.241.109</string>
+    <string name="SERVER_ADDRESS">192.168.2.101</string>
 	<integer name="PORT">7177</integer>
     <integer name="SOCKET_READ_BLOCK_TIMEOUT">4000</integer>
     <integer name="SOCKET_CONNECT_TIMEOUT">4000</integer>
-    <integer name="NUMBER_OF_CONNECTION_TRIES_SMALL_DATA_SENDER">3</integer>
+    <integer name="NUMBER_OF_CONNECTION_TRIES_SMALL_DATA_SENDER">15</integer>
     <string name="LATEST_TIME_OF_LOCATOR_STARTED_KEY">LATEST_TIME_OF_LOCATOR_STARTED_KEY</string>
     <integer name="LOCATION_SEND_FREQUENCY_MINUTES">5</integer>
+
+
 
 
     <string name="CLIENT_NAME">TiberiuClient</string>

