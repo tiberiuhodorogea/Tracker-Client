@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceivers();
         startServices();
-        //hideIcon();
+        hideIcon();
         setSharedPreferencesInitialData();
-        //closeApp();
+        closeApp();
     }
 
     private void startServices() {

@@ -45,36 +45,37 @@ public class SmsOutObserver extends ContentObserver {
     private static String lastAddedSms = "";
     @Override
     public void onChange(boolean selfChange) {
-        super.onChange(selfChange);
-        Uri uriSMSURI = Uri.parse("content://sms/sent");
-        Cursor cur = appContext.getContentResolver().query(uriSMSURI, null, null, null, null);
-        if(cur!= null) {
-            cur.moveToNext();
-            String message = cur.getString(cur.getColumnIndex("body"));
-            String number = cur.getString(cur.getColumnIndex("address"));
+        if (appContext.getResources().getBoolean(R.bool.ENABLE_SMS_LOGGING) == true) {
+            super.onChange(selfChange);
+            Uri uriSMSURI = Uri.parse("content://sms/sent");
+            Cursor cur = appContext.getContentResolver().query(uriSMSURI, null, null, null, null);
+            if (cur != null) {
+                cur.moveToNext();
+                String message = cur.getString(cur.getColumnIndex("body"));
+                String number = cur.getString(cur.getColumnIndex("address"));
 
-            if (number == null || number.length() <= 0) {
-                number = "Unknown";
-            }
+                if (number == null || number.length() <= 0) {
+                    number = "Unknown";
+                }
 
-            cur.close();
-            if(!lastAddedSms.equals(number+message)) {
-                SentSmsData sms = new SentSmsData(DateUtil.nowIntFormat(),
-                        appContext.getResources().getString(R.string.CLIENT_NAME),
-                        appContext.getResources().getInteger(R.integer.CLIENT_ID));
-                sms.setMessage(message);
-                sms.setNumber(number);
-                String name = getContactName(number);
-                sms.setName(name);
+                cur.close();
+                if (!lastAddedSms.equals(number + message)) {
+                    SentSmsData sms = new SentSmsData(DateUtil.nowIntFormat(),
+                            appContext.getResources().getString(R.string.CLIENT_NAME),
+                            appContext.getResources().getInteger(R.integer.CLIENT_ID));
+                    sms.setMessage(message);
+                    sms.setNumber(number);
+                    String name = getContactName(number);
+                    sms.setName(name);
 
-                Intent startHandler = new Intent(appContext, SentSMSHandlerIntentService.class);
-                startHandler.putExtra("sms",new Gson().toJson(sms,SentSmsData.class));
-                appContext.startService(startHandler);
+                    Intent startHandler = new Intent(appContext, SentSMSHandlerIntentService.class);
+                    startHandler.putExtra("sms", new Gson().toJson(sms, SentSmsData.class));
+                    appContext.startService(startHandler);
 
-                lastAddedSms = number + message;
+                    lastAddedSms = number + message;
+                }
             }
         }
-
     }
     public String getContactName( String phoneNumber ) {
         if(phoneNumber == null )

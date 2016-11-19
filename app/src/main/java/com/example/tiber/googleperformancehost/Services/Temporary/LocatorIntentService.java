@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -85,6 +88,7 @@ public class LocatorIntentService extends IntentService implements GoogleApiClie
         appContext.startService(forDataSender);
 
         mGoogleApiClient.disconnect();
+
         stopSelf();
     }
 
@@ -105,7 +109,8 @@ public class LocatorIntentService extends IntentService implements GoogleApiClie
     }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.wtf(debugTag,"onConectionFailed()");
+        Log.wtf(debugTag,"onConectionFailed(), connection result = " + connectionResult.toString());
+
     }
 
 }
