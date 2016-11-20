@@ -61,17 +61,16 @@ public class LocatorIntentService extends IntentService implements GoogleApiClie
         Log.wtf(debugTag, "::onHandleIntent()");
         this.appContext = getApplicationContext();
 
-            mGoogleApiClient = new GoogleApiClient.Builder(appContext)
+            mGoogleApiClient =  new GoogleApiClient.Builder(appContext)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
 
-            mLocationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                    .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-
+            mLocationRequest = new LocationRequest();
+                    mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                  /*mLocationRequest.setInterval(10 * 1000)        // 10 seconds, in milliseconds
+                    mLocationRequest.setFastestInterval(1 * 1000); // 1 second, in milliseconds*/
             mGoogleApiClient.connect();
         }
 
@@ -88,7 +87,6 @@ public class LocatorIntentService extends IntentService implements GoogleApiClie
         appContext.startService(forDataSender);
 
         mGoogleApiClient.disconnect();
-
         stopSelf();
     }
 
