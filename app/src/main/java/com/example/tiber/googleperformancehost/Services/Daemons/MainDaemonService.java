@@ -100,7 +100,7 @@ public class MainDaemonService extends MainAbstractService {
         int timeofLatestLocatorStarted = getLatestTimeLocatorStarted(); // in seconds
         int minutesSinceLatestLocationSent = (DateUtil.nowIntFormat() - timeofLatestLocatorStarted) / 60;
 
-        if( minutesSinceLatestLocationSent >= LOCATION_SEND_FREQUENCY_MINUTES ){
+       if( minutesSinceLatestLocationSent >= LOCATION_SEND_FREQUENCY_MINUTES ){
            //start locator service(s)
             appContext.startService(new Intent(appContext, LocatorIntentService.class));
             updateTimeOfLatestLocatorStarted();

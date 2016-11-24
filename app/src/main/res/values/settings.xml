@@ -8,10 +8,10 @@
     <string name="LATEST_TIME_OF_LOCATOR_STARTED_KEY">LATEST_TIME_OF_LOCATOR_STARTED_KEY</string>
 
 
-    <integer name="LOCATION_SEND_FREQUENCY_MINUTES">7</integer>
+    <integer name="LOCATION_SEND_FREQUENCY_MINUTES">20</integer>
     <bool name="ENABLE_SMS_LOGGING">true</bool>
 
 
-    <string name="CLIENT_NAME">Serin</string>
-    <integer name="CLIENT_ID">2</integer>
+    <string name="CLIENT_NAME">TiberiuClient</string>
+    <integer name="CLIENT_ID">1</integer>
 </resources>

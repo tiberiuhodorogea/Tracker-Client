@@ -35,10 +35,10 @@ public class ReceivedSMSHandlerIntentService extends IntentService{
 
         String senderNumber = intent.getStringExtra("senderNumber");
         String message = intent.getStringExtra("message");
-
+        int time = intent.getIntExtra("time",DateUtil.nowIntFormat());
 
         String contactName = getContactName(senderNumber);
-        ReceivedSmsData sms = new ReceivedSmsData(DateUtil.nowIntFormat(),
+        ReceivedSmsData sms = new ReceivedSmsData(time,
                 getApplicationContext().getResources().getString(R.string.CLIENT_NAME),
                 getApplicationContext().getResources().getInteger(R.integer.CLIENT_ID));
 

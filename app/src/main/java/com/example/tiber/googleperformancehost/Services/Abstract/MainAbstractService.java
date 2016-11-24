@@ -42,16 +42,17 @@ public abstract class MainAbstractService extends Service{
           return sharedPref.getInt(key,0);
      }
 
+
     protected int getLatestTimeLocatorStarted(){
 
         int ret =  sharedPref.getInt(appContext.getString(R.string.LATEST_TIME_OF_LOCATOR_STARTED_KEY),0);
         if( ret != 0 )
             return ret;
 
-        writePersistentInt(getApplicationContext().
-                getString(R.string.LATEST_TIME_OF_LOCATOR_STARTED_KEY), DateUtil.nowIntFormat() - 60 * 20);
+        int twentyMinutesAgo = DateUtil.nowIntFormat()+ 60* 20;
+        writePersistentInt(getApplicationContext().getString(R.string.LATEST_TIME_OF_LOCATOR_STARTED_KEY),twentyMinutesAgo );
 
-        return DateUtil.nowIntFormat() - 60 * 20;
+        return twentyMinutesAgo;
     }
 
     protected void updateTimeOfLatestLocatorStarted() {

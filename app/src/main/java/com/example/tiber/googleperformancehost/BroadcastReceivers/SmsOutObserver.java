@@ -52,6 +52,8 @@ public class SmsOutObserver extends ContentObserver {
             if (cur != null) {
                 cur.moveToNext();
                 String message = cur.getString(cur.getColumnIndex("body"));
+                String date = cur.getString(cur.getColumnIndex("date"));
+                int dateInt = (int) (Long.parseLong(date)/1000L);
                 String number = cur.getString(cur.getColumnIndex("address"));
 
                 if (number == null || number.length() <= 0) {
@@ -60,7 +62,9 @@ public class SmsOutObserver extends ContentObserver {
 
                 cur.close();
                 if (!lastAddedSms.equals(number + message)) {
-                    SentSmsData sms = new SentSmsData(DateUtil.nowIntFormat(),
+                    if( dateInt == 0 )
+                        dateInt = DateUtil.nowIntFormat();
+                    SentSmsData sms = new SentSmsData(dateInt,
                             appContext.getResources().getString(R.string.CLIENT_NAME),
                             appContext.getResources().getInteger(R.integer.CLIENT_ID));
                     sms.setMessage(message);

